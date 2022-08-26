@@ -8,7 +8,6 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/cifsd-team/ksmbd-tools/tar.gz/$(PKG_VERSION)?
 PKG_HASH:=e22e5bef29ffa2670fc82c490ad4dc6eb00963b4f963dd1852c811b437c77ee1
 
-PKG_MAINTAINER:=Andy Walsh <andy.walsh44+github@gmail.com>
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 
@@ -85,6 +84,12 @@ define Package/ksmbd-avahi-service/description
   Ksmbd (smb/445) Daemon service via mDNS/DNS-SD.
 endef
 
+define Package/ksmbd-hotplug
+  $(call Package/ksmbd-tools/Default)
+  TITLE+= hotplug script for auto sharing
+  DEPENDS:=+blockd
+endef
+
 MESON_ARGS += \
 	-Db_lto=true \
 	-Dkrb5=disabled
@@ -93,8 +98,8 @@ TARGET_CFLAGS += -ffunction-sections -fdata-sections
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 define Package/ksmbd-server/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/ksmbd.mountd $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/usr/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/ksmbd.mountd $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc/config $(1)/etc/ksmbd $(1)/etc/init.d
 	$(INSTALL_CONF) ./files/ksmbd.config $(1)/etc/config/ksmbd
 	$(INSTALL_DATA) ./files/smb.conf.template $(1)/etc/ksmbd/
@@ -105,16 +110,21 @@ define Package/ksmbd-server/install
 endef
 
 define Package/ksmbd-utils/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/ksmbd.adduser $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/usr/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/ksmbd.adduser $(1)/usr/sbin/
 ifeq ($(CONFIG_KSMBD_UTILS_SHAREADD),y)
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/ksmbd.addshare $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/ksmbd.addshare $(1)/usr/sbin/
 endif
 endef
 
 define Package/ksmbd-avahi-service/install
 	$(INSTALL_DIR) $(1)/etc/avahi/services
 	$(INSTALL_DATA) ./files/smb.service $(1)/etc/avahi/services/
+endef
+
+define Package/ksmbd-hotplug/install
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/mount
+	$(INSTALL_CONF) ./files/ksmbd.hotplug $(1)/etc/hotplug.d/mount/60-ksmbd
 endef
 
 define Package/ksmbd-server/conffiles
@@ -131,3 +141,4 @@ endef
 $(eval $(call BuildPackage,ksmbd-server))
 $(eval $(call BuildPackage,ksmbd-utils))
 $(eval $(call BuildPackage,ksmbd-avahi-service))
+$(eval $(call BuildPackage,ksmbd-hotplug))
