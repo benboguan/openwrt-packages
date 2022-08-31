@@ -43,8 +43,6 @@ define Package/libgd-full
   DEPENDS+=+libtiff +libfreetype
   TITLE+=(full)
   VARIANT:=full
-  PROVIDES:=libgd
-  CONFLICTS:=libgd
 endef
 
 define Package/libgd/description/default

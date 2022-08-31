@@ -196,7 +196,7 @@ upnpd() {
 			nft add chain inet miniupnpd prerouting { type nat hook prerouting priority dstnat -20 \; policy accept \; comment \"Miniupnpd prerouting table\" \; }
 			nft add chain inet miniupnpd postrouting { type nat hook postrouting priority srcnat -20 \; policy accept \; comment \"Miniupnpd postrouting table\" \; }
 		else
-			iptables -L MINIUPNPD >/dev/null 2>&1 || fw3 reload			
+			iptables -L MINIUPNPD >/dev/null 2>&1 || fw3 reload
 		fi
 	else
 		logger -t "upnp daemon" "external interface not found, not starting"
