@@ -1,17 +1,18 @@
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=Xray-core
-PKG_VERSION:=1.5.10
+PKG_NAME:=xray-core
+PKG_VERSION:=1.6.0
 PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/XTLS/Xray-core/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=0cce205187a38d7e13dc4e503e9a8667c9cf438844e091bd91989aaac8f2c411
+PKG_HASH:=b65375090a2d48d358a582837d485bfaa9572e4d1f5a649895b9fd83d0f69e43
 
 PKG_MAINTAINER:=Tianling Shen <cnsztl@immortalwrt.org>
 PKG_LICENSE:=MPL-2.0
 PKG_LICENSE_FILES:=LICENSE
 
+PKG_BUILD_DIR:=$(BUILD_DIR)/Xray-core-$(PKG_VERSION)
 PKG_BUILD_DEPENDS:=golang/host
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
@@ -44,6 +45,13 @@ define Package/xray-example
   PKGARCH:=all
 endef
 
+define Package/xray-geodata
+  $(call Package/xray/template)
+  TITLE+= (geodata files)
+  DEPENDS:=xray-core
+  PKGARCH:=all
+endef
+
 define Package/xray/description
   Xray, Penetrates Everything. It helps you to build your own computer network.
   It secures your network connections and thus protects your privacy.
@@ -57,6 +65,12 @@ define Package/xray-example/description
   $(call Package/xray/description)
 
   This includes example configuration files for xray-core.
+endef
+
+define Package/xray-geodata/description
+  $(call Package/xray/description)
+
+  This includes GEO datas used for xray-core.
 endef
 
 define Package/xray-core/conffiles
