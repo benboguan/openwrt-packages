@@ -10,7 +10,7 @@ PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/teddysun/xray-plugin/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=skip
+PKG_HASH:=0e4eb348ad66d04998e615ebcf987f93f916dfd2ceeee70451d40183664de0dc
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
@@ -32,11 +32,6 @@ define Package/xray-plugin
   TITLE:=SIP003 plugin for Shadowsocks, based on Xray
   URL:=https://github.com/teddysun/xray-plugin
   DEPENDS:=$(GO_ARCH_DEPENDS) +ca-bundle
-endef
-
-define Package/xray-plugin/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(GO_PKG_BUILD_BIN_DIR)/xray-plugin $(1)/usr/bin/xray-plugin
 endef
 
 $(eval $(call GoBinPackage,xray-plugin))
